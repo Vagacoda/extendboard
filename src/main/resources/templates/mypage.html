@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>마이페이지</title></head>
+<body>
+<h1>마이페이지</h1>
+<p>아이디: <strong th:text="${user.loginId}"></strong></p>
+
+<h3>비밀번호 변경</h3>
+<form action="/user/change-password" method="post">
+  <input type="password" name="newPassword" placeholder="새 비밀번호" required>
+  <button type="submit">변경하기</button>
+</form>
+
+<hr>
+<a href="/">게시판으로 돌아가기</a>
+</body>
+</html>

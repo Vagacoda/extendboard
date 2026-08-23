@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>EXTEND BOARD</title></head>
+<body>
+<h1>EXTEND BOARD</h1>
+
+<div>
+  <span th:if="${loginUser != null}">
+    <strong><span th:text="${loginUser.loginId}"></span></strong>님 [권한: <span th:text="${loginUser.role}"></span>] |
+    <a href="/mypage">마이페이지</a> |
+    <a th:if="${loginUser.role.name() == 'ADMIN'}" href="/admin/users">⚙️ 회원 관리페이지</a> |
+    <a href="/logout">로그아웃</a>
+  </span>
+  <span th:if="${loginUser == null}">
+    로그인이 필요합니다. <a href="/login">로그인</a> | <a href="/join">회원가입</a>
+  </span>
+</div>
+<hr>
+
+<!-- 글 작성 (파일 업로드 enctype 필수) -->
+<div th:if="${loginUser != null}">
+  <h3>글 작성하기</h3>
+  <form action="/write" method="post" enctype="multipart/form-data">
+    <div><label>제목: </label><input type="text" name="title" required></div><br>
+    <div><label>내용: </label><textarea name="content" rows="4" cols="30" required></textarea></div><br>
+    <div><label>사진 첨부: </label><input type="file" name="imageFile" accept="image/*"></div><br>
+    <button type="submit">작성하기</button>
+  </form>
+</div>
+<hr>
+
+<h2>게시글 목록</h2>
+<ul>
+  <li th:each="article : ${articles}">
+    [작성자: <span th:text="${article.author.loginId}"></span>]<br>
+    <strong th:text="${article.title}">제목</strong>: <span th:text="${article.content}">내용</span><br>
+
+    <!-- 사진이 있는 경우에만 출력 -->
+    <div th:if="${article.imageUrl != null}">
+      <img th:src="${article.imageUrl}" width="200" alt="첨부 이미지"><br>
+    </div>
+
+    <span th:if="${loginUser != null and (loginUser.id == article.author.id or loginUser.role.name() == 'ADMIN')}">
+      <a th:href="@{/article/edit/{id}(id=${article.id})}">수정</a> |
+      <a th:href="@{/article/delete/{id}(id=${article.id})}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+    </span>
+  </li>
+</ul>
+</body>
+</html>
